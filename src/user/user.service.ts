@@ -13,10 +13,10 @@ export class UserService {
   async userInfo() {
     return await this.userRepository
       .createQueryBuilder('user')
-      .select('user.id', 'id')
-      .addSelect('user.name', 'name')
-      .addSelect('user.school', 'school')
-      .where('user.id=:id', { id: 1 })
+      .select('name', 'name')
+      .addSelect('school', 'school')
+      .addSelect('email', 'email')
+      .where('id=:id', { id: 1 })
       .getRawOne();
   }
 }

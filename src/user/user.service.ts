@@ -11,11 +11,12 @@ export class UserService {
   ) {}
 
   async userInfo() {
-    return this.userRepository
+    return await this.userRepository
       .createQueryBuilder('user')
-      .select('id', 'id')
-      .addSelect('name', 'name')
+      .select('name', 'name')
       .addSelect('school', 'school')
-      .where('id=:id', { id: 1 });
+      .addSelect('email', 'email')
+      .where('id=:id', { id: 1 })
+      .getRawOne();
   }
 }

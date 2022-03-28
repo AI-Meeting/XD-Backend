@@ -38,10 +38,8 @@ export class AuthService {
   async login(loginRequest: LoginRequestDto) {
     const { email, password } = loginRequest;
 
-    console.log('asd');
     const user = await this.userRepository.findOne({ email });
     if (!user) {
-      console.log('asasadd');
       throw new NotFoundException('잘못된 인증 정보');
     }
 

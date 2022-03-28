@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { APP_FILTER } from '@nestjs/core';
+import CatchException from './error/CatchException';
 
 @Module({
   imports: [
@@ -25,8 +28,14 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
     AuthModule,
+    UserModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: CatchException,
+    },
+  ],
 })
 export class AppModule {}

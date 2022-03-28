@@ -24,7 +24,7 @@ export class UserService {
   }
 
   // 내가 등록한 모의 면접 후기
-  async myInterviewReview() {
+  async myInterviewReview(user_id: number) {
     return await this.companyRepository
       .createQueryBuilder('company')
       .select('company.id')
@@ -34,6 +34,7 @@ export class UserService {
       .addSelect('company.job')
       .addSelect('company.field')
       .leftJoinAndSelect('company.address', 'address')
+      .where('company.user_id=:user_id', { user_id: user_id })
       .getMany();
   }
 

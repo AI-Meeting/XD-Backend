@@ -12,7 +12,7 @@ export class UserController {
 
   @Get('/interview/review')
   async myInterviewReview() {
-    return await this.userService.myInterviewReview();
+    return await this.userService.myInterviewReview(2);
   }
 
   @Get('/interview')

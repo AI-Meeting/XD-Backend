@@ -9,4 +9,14 @@ export class UserController {
   async userInfo() {
     return await this.userService.userInfo();
   }
+
+  @Get('/interview/review')
+  async myInterviewReview() {
+    return await this.userService.myInterviewReview();
+  }
+
+  @Get('/interview')
+  async myInterview() {
+    return this.userService.myInterview();
+  }
 }

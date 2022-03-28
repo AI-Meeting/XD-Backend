@@ -5,10 +5,8 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
+  @Get('/')
   async userInfo() {
-    await this.userService.userInfo();
-
-    return { status: 201, message: 'success' };
+    return await this.userService.userInfo();
   }
 }

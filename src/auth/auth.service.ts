@@ -30,7 +30,5 @@ export class AuthService {
 
   async login(loginRequest: LoginRequestDto) {
     const { email, password } = loginRequest;
-
-    
   }
 }

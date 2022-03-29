@@ -5,6 +5,7 @@ import { Address } from '../entities/Address';
 import { Company } from '../entities/Company';
 import { Question } from '../entities/Question';
 import { CompanyListResponseDto } from './dto/company-list-response.dto';
+import { CompanyLocationListResponseDto } from './dto/company-location-list-response.dto';
 
 @Injectable()
 export class CompanyService {
@@ -68,5 +69,32 @@ export class CompanyService {
       }),
     );
     return companyListResponse;
+  }
+
+  async getCompanyLocationList(): Promise<CompanyLocationListResponseDto[]> {
+    const companyList = await this.companyRepository.find({
+      order: { id: 'DESC' },
+    });
+    let companyLocationList: CompanyLocationListResponseDto[] = [];
+
+    companyLocationList = await Promise.all(
+      companyList.map(
+        async (company: Company): Promise<CompanyLocationListResponseDto> => {
+          const address = await this.addressRepository.findOne({
+            where: { id: company.addressId },
+          });
+
+          return {
+            companyId: company.id,
+            name: company.name,
+            field: company.field,
+            level: company.level,
+            address: [address.latitude, address.longitude],
+          };
+        },
+      ),
+    );
+
+    return companyLocationList;
   }
 }

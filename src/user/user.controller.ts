@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -15,8 +16,10 @@ export class UserController {
     return await this.userService.myInterviewReview(2);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('/interview')
-  async myInterview() {
-    return this.userService.myInterview();
+  async myInterview(@Request() req: any) {
+    console.log(req.user.userId);
+    return this.userService.myInterview(req.user.userId);
   }
 }

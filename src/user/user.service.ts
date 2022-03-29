@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Address } from '../entities/Address';
 import { Company } from '../entities/Company';
 import { User } from '../entities/User';
 
@@ -38,10 +39,32 @@ export class UserService {
       .getMany();
   }
 
-  async myInterview() {
+  async myInterview(userId: number) {
     return await this.companyRepository
       .createQueryBuilder('interview')
-      .select('interview.id')
-      .addSelect('');
+      .select([
+        'interview.id',
+        'interview.name',
+        'interview.description',
+        'interview.level',
+        'interview.job',
+        'interview.field',
+      ])
+      .leftJoin('interview.address', 'address')
+      .addSelect('address.location')
+      .where('interview.user_id=:id', { id: userId })
+      .getMany();
   }
 }
+
+// {
+//   "id" : 1,
+//   "name" : "초스",
+//   "location" : "대덕어쩌구"
+//   "description" : "안녕하세요!~~~~ 개어렵네요 ~~~ 지원하지 마세요",
+//   "level" : 3.9,
+//   "job" : "프론트엔드 분야",
+//   "field" : "마케팅/IT",
+//   "questionCnt" : 3,
+//   "isProgress" : false || true
+// }

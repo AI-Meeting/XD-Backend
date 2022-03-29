@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Strategy, ExtractJwt } from 'passport-jwt';
@@ -19,15 +19,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: Payload) {
-    const user = await this.userRepository.findOne({
-      where: {
-        id: payload.sub,
-      },
-    });
-    if (user) {
-      return payload;
-    } else {
-      return BadRequestException;
-    }
+    return payload;
   }
 }

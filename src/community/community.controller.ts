@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   Request,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { CommunityBoard } from '../entities/CommunityBoard';
+import { CommunityComment } from '../entities/CommunityComment';
 import { CommunityService } from './community.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 
@@ -28,5 +30,10 @@ export class CommunityController {
     @Query('category') category: string | undefined,
   ): Promise<CommunityBoard[]> {
     return await this.communityService.getCommunityBoard(category);
+  }
+
+  @Get(':id')
+  async getBoardComment(@Param('id') id: string): Promise<CommunityComment[]> {
+    return await this.communityService.getBoardComment(id);
   }
 }

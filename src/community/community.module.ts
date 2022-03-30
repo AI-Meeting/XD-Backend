@@ -4,9 +4,10 @@ import { CommunityController } from './community.controller';
 import { User } from '../entities/User';
 import { CommunityBoard } from '../entities/CommunityBoard';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommunityComment } from '../entities/CommunityComment';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, CommunityBoard])],
+  imports: [TypeOrmModule.forFeature([User, CommunityBoard, CommunityComment])],
   controllers: [CommunityController],
   providers: [CommunityService],
 })

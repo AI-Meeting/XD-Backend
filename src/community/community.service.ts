@@ -3,13 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundError } from 'rxjs';
 import { Repository } from 'typeorm';
 import { CommunityBoard } from '../entities/CommunityBoard';
+import { CommunityComment } from '../entities/CommunityComment';
 import { CreateBoardDto } from './dto/create-board.dto';
 
 @Injectable()
 export class CommunityService {
   constructor(
     @InjectRepository(CommunityBoard)
-    private readonly communityBoard: Repository<CommunityBoard>,
+    private readonly communityBoardRepository: Repository<CommunityBoard>,
+    @InjectRepository(CommunityComment)
+    private readonly communityCommentRepository: Repository<CommunityComment>,
   ) {}
 
   async createBoard(body: CreateBoardDto, req: any) {
@@ -24,7 +27,7 @@ export class CommunityService {
       throw new BadRequestException();
     }
 
-    await this.communityBoard.save({
+    await this.communityBoardRepository.save({
       userId: req.sub,
       category,
       content,
@@ -38,11 +41,11 @@ export class CommunityService {
   ): Promise<CommunityBoard[]> {
     let communityBoardList = null;
     if (category === undefined) {
-      communityBoardList = await this.communityBoard.find({
+      communityBoardList = await this.communityBoardRepository.find({
         order: { id: 'DESC' },
       });
     } else {
-      communityBoardList = await this.communityBoard.find({
+      communityBoardList = await this.communityBoardRepository.find({
         where: { category: category },
         order: { id: 'DESC' },
       });
@@ -53,5 +56,18 @@ export class CommunityService {
     }
 
     return communityBoardList;
+  }
+
+  async getBoardComment(id: string): Promise<CommunityComment[]> {
+    const communityCommentList = await this.communityCommentRepository.find({
+      where: {
+        communityBoardId: id,
+      },
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    return communityCommentList;
   }
 }

@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundError } from 'rxjs';
 import { Repository } from 'typeorm';
 import { CommunityBoard } from '../entities/CommunityBoard';
 import { CommunityComment } from '../entities/CommunityComment';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { CreateCommentRequestDto } from './dto/create-comment.dto';
 
 @Injectable()
 export class CommunityService {
@@ -51,10 +56,6 @@ export class CommunityService {
       });
     }
 
-    if (!communityBoardList) {
-      return [];
-    }
-
     return communityBoardList;
   }
 
@@ -69,5 +70,26 @@ export class CommunityService {
     });
 
     return communityCommentList;
+  }
+
+  async createBoardComment(
+    id: string,
+    user: any,
+    body: CreateCommentRequestDto,
+  ) {
+    const board = await this.communityBoardRepository.find({
+      where: { id: id },
+    });
+
+    if (board.length === 0) {
+      throw new NotFoundException('존재하지않는 게시물');
+    }
+
+    await this.communityCommentRepository.save({
+      communityBoardId: parseInt(id),
+      userId: parseInt(user.sub),
+      content: body.content,
+    });
+    return;
   }
 }

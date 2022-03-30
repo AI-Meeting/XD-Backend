@@ -13,6 +13,7 @@ import { CommunityBoard } from '../entities/CommunityBoard';
 import { CommunityComment } from '../entities/CommunityComment';
 import { CommunityService } from './community.service';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { CreateCommentRequestDto } from './dto/create-comment.dto';
 
 @Controller('community')
 export class CommunityController {
@@ -35,5 +36,16 @@ export class CommunityController {
   @Get(':id')
   async getBoardComment(@Param('id') id: string): Promise<CommunityComment[]> {
     return await this.communityService.getBoardComment(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id')
+  async createBoardComment(
+    @Param('id') id: string,
+    @Request() req: any,
+    @Body() body: CreateCommentRequestDto,
+  ) {
+    await this.communityService.createBoardComment(id, req.user, body);
+    return { status: 201, message: 'success' };
   }
 }

@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { APP_FILTER } from '@nestjs/core';
 import { CompanyModule } from './company/company.module';
+import { CommunityModule } from './community/community.module';
 import CatchException from './error/CatchException';
 
 @Module({
@@ -31,6 +32,7 @@ import CatchException from './error/CatchException';
     AuthModule,
     UserModule,
     CompanyModule,
+    CommunityModule,
   ],
   controllers: [],
   providers: [

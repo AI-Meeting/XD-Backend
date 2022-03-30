@@ -22,9 +22,10 @@ export class CommunityBoard {
 
   @Column('enum', {
     name: 'category',
-    enum: ['SCHOO', 'COMPANY', 'INTERVIEW', 'ETC'],
+    nullable: true,
+    enum: ['SCHOOL', 'COMPANY', 'INTERVIEW', 'ETC'],
   })
-  category: 'SCHOO' | 'COMPANY' | 'INTERVIEW' | 'ETC';
+  category: 'SCHOOL' | 'COMPANY' | 'INTERVIEW' | 'ETC' | null;
 
   @Column('varchar', { name: 'content', length: 500 })
   content: string;

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -35,5 +36,15 @@ export class CommunityController {
   @Get(':id')
   async getBoardComment(@Param('id') id: string): Promise<CommunityComment[]> {
     return await this.communityService.getBoardComment(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('comments/:id')
+  async deleteComment(@Param('id') id: string, @Request() req: any) {
+    await this.communityService.deleteComment(id, req.user);
+    return {
+      status: 201,
+      message: 'success',
+    };
   }
 }

@@ -1,5 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { cp } from 'fs';
 import { NotFoundError } from 'rxjs';
 import { Repository } from 'typeorm';
 import { CommunityBoard } from '../entities/CommunityBoard';
@@ -69,5 +75,19 @@ export class CommunityService {
     });
 
     return communityCommentList;
+  }
+
+  async deleteComment(id: string, user: any) {
+    const comment = await this.communityCommentRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!comment) {
+      throw new NotFoundException();
+    } else if (comment.userId !== parseInt(user.sub)) {
+      throw new UnauthorizedException();
+    }
+
+    await this.communityCommentRepository.delete({ id: parseInt(id) });
   }
 }

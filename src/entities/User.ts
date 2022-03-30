@@ -5,14 +5,15 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Company } from './Company';
-import { QuestionAnswer } from './QuestionAnswer';
-import { Interview } from './Interview';
 import { CommunityBoard } from './CommunityBoard';
 import { CommunityComment } from './CommunityComment';
+import { Company } from './Company';
+import { Interview } from './Interview';
+import { QuestionAnswer } from './QuestionAnswer';
 
 @Index('id_UNIQUE', ['id'], { unique: true })
 @Index('email_UNIQUE', ['email'], { unique: true })
+@Index('IDX_e12875dfb3b1d92d7d7c5377e2', ['email'], { unique: true })
 @Entity('user', { schema: 'xddb' })
 export class User {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
@@ -30,15 +31,6 @@ export class User {
   @Column('varchar', { name: 'school', length: 30 })
   school: string;
 
-  @OneToMany(() => Company, (company) => company.user)
-  companies: Company[];
-
-  @OneToMany(() => QuestionAnswer, (questionAnswer) => questionAnswer.user)
-  questionAnswers: QuestionAnswer[];
-
-  @OneToMany(() => Interview, (interview) => interview.user)
-  interviews: Interview[];
-
   @OneToMany(() => CommunityBoard, (communityBoard) => communityBoard.user)
   communityBoards: CommunityBoard[];
 
@@ -47,4 +39,13 @@ export class User {
     (communityComment) => communityComment.user,
   )
   communityComments: CommunityComment[];
+
+  @OneToMany(() => Company, (company) => company.user)
+  companies: Company[];
+
+  @OneToMany(() => Interview, (interview) => interview.user)
+  interviews: Interview[];
+
+  @OneToMany(() => QuestionAnswer, (questionAnswer) => questionAnswer.user)
+  questionAnswers: QuestionAnswer[];
 }

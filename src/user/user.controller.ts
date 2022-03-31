@@ -19,7 +19,6 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Get('/interview')
   async myInterview(@Request() req: any) {
-    console.log(req.user.userId);
     return this.userService.myInterview(req.user.userId);
   }
 }

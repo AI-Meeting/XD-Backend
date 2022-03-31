@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Address } from '../entities/Address';
 import { Company } from '../entities/Company';
+import { Question } from '../entities/Question';
 import { User } from '../entities/User';
 
 @Injectable()
@@ -12,6 +12,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Company)
     private readonly companyRepository: Repository<Company>,
+    @InjectRepository(Question)
+    private readonly questionRepository: Repository<Question>,
   ) {}
 
   async userInfo() {
@@ -40,31 +42,23 @@ export class UserService {
   }
 
   async myInterview(userId: number) {
+    const companyData = await this.companyRepository.findOne({
+      userId: userId,
+    });
+    const questionCnt = await this.questionRepository.find({
+      companyId: companyData.id,
+    });
+
+    console.log(questionCnt);
+
     return await this.companyRepository
       .createQueryBuilder('interview')
-      .select([
-        'interview.id',
-        'interview.name',
-        'interview.description',
-        'interview.level',
-        'interview.job',
-        'interview.field',
-      ])
+      .select(['name', 'description', 'level', 'job', 'field', 'location'])
+      .addSelect('interview.id', 'id')
       .leftJoin('interview.address', 'address')
-      .addSelect('address.location')
+      .leftJoinAndSelect('interview.question', 'question')
       .where('interview.user_id=:id', { id: userId })
-      .getMany();
+      //.where('question.question_id=:id', { id: companyData.id })
+      .getRawMany();
   }
 }
-
-// {
-//   "id" : 1,
-//   "name" : "초스",
-//   "location" : "대덕어쩌구"
-//   "description" : "안녕하세요!~~~~ 개어렵네요 ~~~ 지원하지 마세요",
-//   "level" : 3.9,
-//   "job" : "프론트엔드 분야",
-//   "field" : "마케팅/IT",
-//   "questionCnt" : 3,
-//   "isProgress" : false || true
-// }

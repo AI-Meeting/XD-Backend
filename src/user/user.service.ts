@@ -42,23 +42,16 @@ export class UserService {
   }
 
   async myInterview(userId: number) {
-    const companyData = await this.companyRepository.findOne({
-      userId: userId,
-    });
-    const questionCnt = await this.questionRepository.find({
-      companyId: companyData.id,
-    });
-
-    console.log(questionCnt);
-
+    // TODO: companyCnt COUNT(*) default 1
     return await this.companyRepository
       .createQueryBuilder('interview')
       .select(['name', 'description', 'level', 'job', 'field', 'location'])
       .addSelect('interview.id', 'id')
+      .addSelect('COUNT(*) AS questionCnt')
       .leftJoin('interview.address', 'address')
-      .leftJoinAndSelect('interview.question', 'question')
+      .leftJoin('interview.questions', 'questions')
       .where('interview.user_id=:id', { id: userId })
-      //.where('question.question_id=:id', { id: companyData.id })
+      .groupBy('questions.company_id')
       .getRawMany();
   }
 }

@@ -28,7 +28,7 @@ export class UserService {
 
   // 내가 등록한 모의 면접 후기
   async myInterviewReview(userId: number) {
-    return await this.companyRepository
+    const interviewReview = await this.companyRepository
       .createQueryBuilder('company')
       .select(['name', 'description', 'level', 'job', 'field', 'location'])
       .addSelect('company.id', 'id')
@@ -38,6 +38,10 @@ export class UserService {
       .where('company.user_id=:id', { id: userId })
       .groupBy('questions.company_id')
       .getRawMany();
+
+    const isProgress = 'asd';
+
+    return { ...interviewReview, isProgress };
   }
 
   // 내가 진행중인 모의 면접

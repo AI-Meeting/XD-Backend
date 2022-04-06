@@ -27,27 +27,26 @@ export class UserService {
   }
 
   // 내가 등록한 모의 면접 후기
-  async myInterviewReview(user_id: number) {
+  async myInterviewReview(userId: number) {
     return await this.companyRepository
       .createQueryBuilder('company')
-      .select('company.id')
-      .addSelect('company.name')
-      .addSelect('company.description')
-      .addSelect('company.level')
-      .addSelect('company.job')
-      .addSelect('company.field')
-      .leftJoinAndSelect('company.address', 'address')
-      .where('company.user_id=:user_id', { user_id: user_id })
-      .getMany();
+      .select(['name', 'description', 'level', 'job', 'field', 'location'])
+      .addSelect('company.id', 'id')
+      .addSelect('COUNT(questions.company_id) AS questionCnt')
+      .leftJoin('company.address', 'address')
+      .leftJoin('company.questions', 'questions')
+      .where('company.user_id=:id', { id: userId })
+      .groupBy('questions.company_id')
+      .getRawMany();
   }
 
+  // 내가 진행중인 모의 면접
   async myInterview(userId: number) {
-    // TODO: companyCnt COUNT(*) default 1
     return await this.companyRepository
       .createQueryBuilder('interview')
       .select(['name', 'description', 'level', 'job', 'field', 'location'])
       .addSelect('interview.id', 'id')
-      .addSelect('COUNT(*) AS questionCnt')
+      .addSelect('COUNT(questions.company_id) AS questionCnt')
       .leftJoin('interview.address', 'address')
       .leftJoin('interview.questions', 'questions')
       .where('interview.user_id=:id', { id: userId })

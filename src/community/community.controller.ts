@@ -14,6 +14,7 @@ import { CommunityBoard } from '../entities/CommunityBoard';
 import { CommunityComment } from '../entities/CommunityComment';
 import { CommunityService } from './community.service';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { CreateCommentRequestDto } from './dto/create-comment.dto';
 
 @Controller('community')
 export class CommunityController {

@@ -39,8 +39,8 @@ export class CompanyService {
       });
     }
 
-    if (!companyList) {
-      throw new NotFoundException('값이 존재하지 않습니다.');
+    if (companyList.length === 0) {
+      return [];
     }
 
     companyListResponse = await Promise.all(

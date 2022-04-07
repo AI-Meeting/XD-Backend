@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { cp } from 'fs';
@@ -11,6 +12,7 @@ import { Repository } from 'typeorm';
 import { CommunityBoard } from '../entities/CommunityBoard';
 import { CommunityComment } from '../entities/CommunityComment';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { CreateCommentRequestDto } from './dto/create-comment.dto';
 
 @Injectable()
 export class CommunityService {
@@ -55,10 +57,6 @@ export class CommunityService {
         where: { category: category },
         order: { id: 'DESC' },
       });
-    }
-
-    if (!communityBoardList) {
-      return [];
     }
 
     return communityBoardList;

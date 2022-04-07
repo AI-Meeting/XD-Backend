@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { use } from 'passport';
 import { Repository } from 'typeorm';
 import { Address } from '../entities/Address';
 import { Company } from '../entities/Company';
 import { Question } from '../entities/Question';
+import { QuestionAnswer } from '../entities/QuestionAnswer';
+import { User } from '../entities/User';
+import { CompanyDetailResponseDto } from './dto/company-detail-response.dto';
 import { CompanyListResponseDto } from './dto/company-list-response.dto';
 import { CompanyLocationListResponseDto } from './dto/company-location-list-response.dto';
 
@@ -16,6 +20,10 @@ export class CompanyService {
     private readonly addressRepository: Repository<Address>,
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(QuestionAnswer)
+    private readonly questionAnswerRepository: Repository<QuestionAnswer>,
   ) {}
 
   async getCompanyList(
@@ -96,5 +104,25 @@ export class CompanyService {
     );
 
     return companyLocationList;
+  }
+
+  async getCompanyDetail(id: number, userId: number) {
+    const company = await this.companyRepository
+      .createQueryBuilder('company')
+      .select(['name', 'description', 'level', 'job', 'field', 'location'])
+      .addSelect('company.id', 'id')
+      .leftJoin('company.address', 'address')
+      .where('company.id=:id', { id: id })
+      .getRawOne();
+
+    const user = await this.userRepository.findOne({ id: 1 });
+    const questions = await this.questionRepository.find({ companyId: id });
+
+    const question = await this.questionAnswerRepository
+      .createQueryBuilder('question_answer')
+      .leftJoinAndSelect('question_answer.question', 'question')
+      .getMany();
+
+    return { ...company, userName: user.name, question };
   }
 }

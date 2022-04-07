@@ -2,8 +2,11 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
+
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { cp } from 'fs';
 import { NotFoundError } from 'rxjs';
 import { Repository } from 'typeorm';
 import { CommunityBoard } from '../entities/CommunityBoard';
@@ -72,24 +75,17 @@ export class CommunityService {
     return communityCommentList;
   }
 
-  async createBoardComment(
-    id: string,
-    user: any,
-    body: CreateCommentRequestDto,
-  ) {
-    const board = await this.communityBoardRepository.find({
+  async deleteComment(id: string, user: any) {
+    const comment = await this.communityCommentRepository.findOne({
       where: { id: id },
     });
 
-    if (board.length === 0) {
-      throw new NotFoundException('존재하지않는 게시물');
+    if (!comment) {
+      throw new NotFoundException();
+    } else if (comment.userId !== parseInt(user.sub)) {
+      throw new UnauthorizedException();
     }
 
-    await this.communityCommentRepository.save({
-      communityBoardId: parseInt(id),
-      userId: parseInt(user.sub),
-      content: body.content,
-    });
-    return;
+    await this.communityCommentRepository.delete({ id: parseInt(id) });
   }
 }

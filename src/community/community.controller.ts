@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -39,13 +40,12 @@ export class CommunityController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':id')
-  async createBoardComment(
-    @Param('id') id: string,
-    @Request() req: any,
-    @Body() body: CreateCommentRequestDto,
-  ) {
-    await this.communityService.createBoardComment(id, req.user, body);
-    return { status: 201, message: 'success' };
+  @Delete('comments/:id')
+  async deleteComment(@Param('id') id: string, @Request() req: any) {
+    await this.communityService.deleteComment(id, req.user);
+    return {
+      status: 201,
+      message: 'success',
+    };
   }
 }

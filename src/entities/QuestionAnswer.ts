@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './User';
 import { Question } from './Question';
+import { User } from './User';
 
 @Index('id_UNIQUE', ['id'], { unique: true })
 @Index('fk_question_answer_user1_idx', ['userId'], {})
@@ -32,17 +32,17 @@ export class QuestionAnswer {
   @Column('varchar', { name: 'video_url', nullable: true, length: 300 })
   videoUrl: string | null;
 
-  @ManyToOne(() => User, (user) => user.questionAnswers, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: User;
-
   @ManyToOne(() => Question, (question) => question.questionAnswers, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
   @JoinColumn([{ name: 'question_id', referencedColumnName: 'id' }])
   question: Question;
+
+  @ManyToOne(() => User, (user) => user.questionAnswers, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
 }

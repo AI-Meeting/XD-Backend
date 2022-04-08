@@ -116,12 +116,18 @@ export class CompanyService {
       .getRawOne();
 
     const user = await this.userRepository.findOne({ id: 1 });
-    const questions = await this.questionRepository.find({ companyId: id });
 
     const question = await this.questionAnswerRepository
       .createQueryBuilder('question_answer')
-      .leftJoinAndSelect('question_answer.question', 'question')
-      .getMany();
+      .select('question_answer.id', 'answerId')
+      .addSelect('question_answer.question_id', 'questionId')
+      .addSelect('question_answer.voice_url', 'voiceUrl')
+      .addSelect('question_answer.video_url', 'videoUrl')
+      .addSelect('question_answer.answer', 'answer')
+      .leftJoin('question_answer.question', 'question')
+      .addSelect('question.question', 'question')
+      .where('question_answer.user_id=:id', { id: userId })
+      .getRawMany();
 
     return { ...company, userName: user.name, question };
   }

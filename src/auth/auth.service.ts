@@ -49,7 +49,10 @@ export class AuthService {
     }
 
     return {
-      token: this.jwtService.sign({ userId: user.id }),
+      token: this.jwtService.sign(
+        { userId: user.id },
+        { expiresIn: process.env.JWT_EXPIRESIN },
+      ),
       userId: user.id,
     };
   }

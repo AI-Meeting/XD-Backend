@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Query,
@@ -32,5 +33,11 @@ export class CompanyController {
   @Get('/:id')
   async getCompanyDetail(@Request() req: any, @Param('id') id: number) {
     return await this.companySerivce.getCompanyDetail(id, req.user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('')
+  async deleteComapny(@Body() body: any, @Request() req: any) {
+    return await this.companySerivce.deleteCompany(body.id, req.user.userId);
   }
 }

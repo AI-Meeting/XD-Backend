@@ -15,12 +15,13 @@ export class InterviewController {
   constructor(private readonly interviewSerivce: InterviewService) {}
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('')
+  @Post()
   async postInterview(
     @Request() req: any,
     @Body() body: InterviewPostDto,
     @Query('questionId') questionId: number,
   ) {
+    console.log(body);
     return this.interviewSerivce.postInterview(questionId, body);
   }
 }

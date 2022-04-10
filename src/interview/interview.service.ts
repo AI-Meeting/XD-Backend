@@ -10,7 +10,7 @@ export class InterviewService {
   private readonly interviewRepository: Repository<Interview>;
 
   async postInterview(questionId: number, interview: InterviewPostDto) {
-    const question = await this.interviewRepository.find({ id: questionId });
+    //  const question = await this.interviewRepository.find({ id: questionId });
 
     return await this.interviewRepository.createQueryBuilder();
   }

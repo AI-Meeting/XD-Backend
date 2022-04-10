@@ -139,15 +139,12 @@ export class CompanyService {
   async deleteCompany(id: number, userId: number) {
     const isCompany = await this.companyRepository.findOne({ id: id });
 
-    console.log(userId, isCompany);
- 
     if (!isCompany) {
       throw new NotFoundException();
-    } else if (isCompany.userId === userId) {
+    } else if (isCompany.userId === userId && isCompany.id === id) {
+      await this.companyRepository.delete({ id: id });
     } else {
       throw new ForbiddenException();
     }
-
-    await this.companyRepository.delete({ id: id });
   }
 }

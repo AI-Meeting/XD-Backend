@@ -43,4 +43,22 @@ export class QuestionAnswerService {
 
     await this.questionAnswerRepository.delete({ id: answerId });
   }
+
+  async patchQuestionAnswer(
+    userId: number,
+    answerId: number,
+    body: QuestionAnswerPostDto,
+  ) {
+    const isAnaswer = await this.questionAnswerRepository.findOne({
+      id: answerId,
+    });
+
+    if (!isAnaswer) {
+      throw new NotFoundException();
+    } else if (userId !== isAnaswer.userId) {
+      throw new UnauthorizedException();
+    }
+
+    await this.questionAnswerRepository.update({ id: answerId }, body);
+  }
 }

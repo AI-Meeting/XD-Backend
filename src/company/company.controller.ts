@@ -1,5 +1,13 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { Company } from '../entities/Company';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CompanyService } from './company.service';
 import { CompanyListResponseDto } from './dto/company-list-response.dto';
 import { CompanyLocationListResponseDto } from './dto/company-location-list-response.dto';
@@ -18,5 +26,11 @@ export class CompanyController {
   @Get('list')
   async getCompanyLocationList(): Promise<CompanyLocationListResponseDto[]> {
     return await this.companySerivce.getCompanyLocationList();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/:id')
+  async getCompanyDetail(@Request() req: any, @Param('id') id: number) {
+    return await this.companySerivce.getCompanyDetail(id, req.user.userId);
   }
 }

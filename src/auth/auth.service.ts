@@ -48,10 +48,11 @@ export class AuthService {
       throw new BadRequestException('잘못된 인증 정보');
     }
 
-    const payload = { sub: user.id };
-
     return {
-      token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(
+        { userId: user.id },
+        { expiresIn: process.env.TOKEN_EXPIRED_TIME },
+      ),
       userId: user.id,
     };
   }

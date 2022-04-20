@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CompanyService } from './company.service';
+import { CompanyDetailResponseDto } from './dto/company-detail-response.dto';
 import { CompanyListResponseDto } from './dto/company-list-response.dto';
 import { CompanyLocationListResponseDto } from './dto/company-location-list-response.dto';
 
@@ -31,13 +32,16 @@ export class CompanyController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/:id')
-  async getCompanyDetail(@Request() req: any, @Param('id') id: number) {
+  async getCompanyDetail(
+    @Request() req: any,
+    @Param('id') id: number,
+  ): Promise<CompanyDetailResponseDto> {
     return await this.companySerivce.getCompanyDetail(id, req.user.userId);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete('')
-  async deleteComapny(@Body() body: any, @Request() req: any) {
+  async deleteComapny(@Body() body: { id: number }, @Request() req: any) {
     return await this.companySerivce.deleteCompany(body.id, req.user.userId);
   }
 }

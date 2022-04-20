@@ -7,10 +7,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './User';
 import { Address } from './Address';
-import { Question } from './Question';
+import { User } from './User';
 import { Interview } from './Interview';
+import { Question } from './Question';
 
 @Index('company_id_UNIQUE', ['id'], { unique: true })
 @Index('fk_company_user_idx', ['userId'], {})
@@ -41,13 +41,6 @@ export class Company {
   @Column('varchar', { name: 'field', nullable: true, length: 45 })
   field: string | null;
 
-  @ManyToOne(() => User, (user) => user.companies, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: User;
-
   @ManyToOne(() => Address, (address) => address.companies, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
@@ -55,9 +48,16 @@ export class Company {
   @JoinColumn([{ name: 'address_id', referencedColumnName: 'id' }])
   address: Address;
 
-  @OneToMany(() => Question, (question) => question.company)
-  questions: Question[];
+  @ManyToOne(() => User, (user) => user.companies, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
 
   @OneToMany(() => Interview, (interview) => interview.company)
   interviews: Interview[];
+
+  @OneToMany(() => Question, (question) => question.company)
+  questions: Question[];
 }

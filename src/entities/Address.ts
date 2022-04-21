@@ -16,10 +16,10 @@ export class Address {
   @Column('varchar', { name: 'location', nullable: true, length: 255 })
   location: string | null;
 
-  @Column('int', { name: 'latitude', nullable: true })
+  @Column('double', { name: 'latitude', nullable: true })
   latitude: number | null;
 
-  @Column('int', { name: 'longitude', nullable: true })
+  @Column('double', { name: 'longitude', nullable: true })
   longitude: number | null;
 
   @OneToMany(() => Company, (company) => company.address)

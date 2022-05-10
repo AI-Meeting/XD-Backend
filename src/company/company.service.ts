@@ -8,8 +8,10 @@ import { Question } from '../entities/Question';
 import { QuestionAnswer } from '../entities/QuestionAnswer';
 import { User } from '../entities/User';
 import { CompanyDetailResponseDto } from './dto/company-detail-response.dto';
+import { CompanyInterviewRequestDto } from './dto/company-interview-request.dto';
 import { CompanyListResponseDto } from './dto/company-list-response.dto';
 import { CompanyLocationListResponseDto } from './dto/company-location-list-response.dto';
+import axios from 'axios';
 
 @Injectable()
 export class CompanyService {
@@ -130,5 +132,39 @@ export class CompanyService {
       .getRawMany();
 
     return { ...company, userName: user.name, question };
+  }
+
+  async postInterview(data: CompanyInterviewRequestDto, userId: number) {
+    const coordinate = await axios.get(
+      'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode',
+      {
+        params: {
+          query: data.location,
+        },
+        headers: {
+          'X-NCP-APIGW-API-KEY-ID': process.env.NAVER_CLIENT_ID,
+          'X-NCP-APIGW-API-KEY': process.env.NAVER_CLIENT_SECRET_KEY,
+        },
+      },
+    );
+    if (coordinate?.data.addresses.length === 0) {
+      throw new NotFoundException();
+    }
+    const { x, y, roadAddress } = coordinate.data.addresses[0];
+    console.log(coordinate.data.addresses[0]);
+    const address = await this.addressRepository.save({
+      location: roadAddress,
+      latitude: parseFloat(x),
+      longitude: parseFloat(y),
+    });
+    await this.companyRepository.save({
+      userId,
+      addressId: address.id,
+      name: data.name,
+      description: data.description,
+      level: data.level,
+      job: data.job,
+      field: data.field,
+    });
   }
 }

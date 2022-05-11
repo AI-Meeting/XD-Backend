@@ -146,7 +146,8 @@ export class CompanyService {
     } else {
       throw new ForbiddenException();
     }
-    
+  }
+
   async postInterview(data: CompanyInterviewRequestDto, userId: number) {
     const coordinate = await axios.get(
       'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode',

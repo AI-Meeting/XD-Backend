@@ -4,9 +4,11 @@ import {
   Delete,
   Get,
   Param,
+  Post,
   Query,
   Request,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CompanyService } from './company.service';

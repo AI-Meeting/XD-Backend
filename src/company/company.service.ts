@@ -4,14 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { use } from 'passport';
 import { Repository } from 'typeorm';
 import { Address } from '../entities/Address';
 import { Company } from '../entities/Company';
 import { Question } from '../entities/Question';
 import { QuestionAnswer } from '../entities/QuestionAnswer';
 import { User } from '../entities/User';
-import { CompanyDetailResponseDto } from './dto/company-detail-response.dto';
 import { CompanyInterviewRequestDto } from './dto/company-interview-request.dto';
 import { CompanyListResponseDto } from './dto/company-list-response.dto';
 import { CompanyLocationListResponseDto } from './dto/company-location-list-response.dto';

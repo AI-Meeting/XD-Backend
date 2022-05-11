@@ -7,7 +7,6 @@ import {
   Query,
   Request,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CompanyService } from './company.service';

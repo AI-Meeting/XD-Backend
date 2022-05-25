@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Address } from '../entities/Address';
@@ -107,6 +111,8 @@ export class CompanyService {
   }
 
   async getCompanyDetail(id: number, userId: number) {
+    const user = await this.userRepository.findOne({ id: 1 });
+
     const company = await this.companyRepository
       .createQueryBuilder('company')
       .select(['name', 'description', 'level', 'job', 'field', 'location'])
@@ -114,8 +120,6 @@ export class CompanyService {
       .leftJoin('company.address', 'address')
       .where('company.id=:id', { id: id })
       .getRawOne();
-
-    const user = await this.userRepository.findOne({ id: 1 });
 
     const question = await this.questionAnswerRepository
       .createQueryBuilder('question_answer')
@@ -130,6 +134,18 @@ export class CompanyService {
       .getRawMany();
 
     return { ...company, userName: user.name, question };
+  }
+
+  async deleteCompany(id: number, userId: number) {
+    const isCompany = await this.companyRepository.findOne({ id: id });
+
+    if (!isCompany) {
+      throw new NotFoundException();
+    } else if (isCompany.userId === userId && isCompany.id === id) {
+      await this.companyRepository.delete({ id: id });
+    } else {
+      throw new ForbiddenException();
+    }
   }
 
   async postInterview(data: CompanyInterviewRequestDto, userId: number) {

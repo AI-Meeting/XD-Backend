@@ -10,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { timingSafeEqual } from 'crypto';
 import { CompanyService } from './company.service';
 import { CompanyDetailResponseDto } from './dto/company-detail-response.dto';
 import { CompanyInterviewRequestDto } from './dto/company-interview-request.dto';

@@ -36,10 +36,7 @@ export class QuestionAnswerController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard('jwt'))
-  async deleteQuestionAnswer(
-    @Request() req: any,
-    @Query('answerId') answerId: number,
-  ) {
+  async deleteQuestionAnswer(@Request() req: any, @Body() answerId: number) {
     return this.questionAnswerService.deleteQuestionAanswer(
       req.user.userId,
       answerId,

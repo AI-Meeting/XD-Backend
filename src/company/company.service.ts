@@ -165,13 +165,14 @@ export class CompanyService {
       throw new NotFoundException();
     }
     const { x, y, roadAddress } = coordinate.data.addresses[0];
-    console.log(coordinate.data.addresses[0]);
+
     const address = await this.addressRepository.save({
       location: roadAddress,
       latitude: parseFloat(x),
       longitude: parseFloat(y),
     });
-    await this.companyRepository.save({
+
+    const company = await this.companyRepository.save({
       userId,
       addressId: address.id,
       name: data.name,
@@ -180,5 +181,14 @@ export class CompanyService {
       job: data.job,
       field: data.field,
     });
+
+    data.question.map(async (value: string) => {
+      await this.questionRepository.save({
+        companyId: company.id,
+        question: value,
+      });
+    });
+
+    return { status: 201, message: 'success' };
   }
 }

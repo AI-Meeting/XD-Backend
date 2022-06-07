@@ -42,7 +42,7 @@ export class CompanyController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post()
+  @Post('')
   async postInterview(
     @Body() body: CompanyInterviewRequestDto,
     @Request() req: any,

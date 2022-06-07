@@ -12,14 +12,14 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('/interview/review')
-  async myInterviewReview(@Request() req: any) {
-    return await this.userService.myInterviewReview(req.user.userId);
-  }
-
-  @UseGuards(AuthGuard('jwt'))
   @Get('/interview')
   async myInterview(@Request() req: any) {
     return this.userService.myInterview(req.user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/interview/review')
+  async myInterviewReview(@Request() req: any) {
+    return await this.userService.myInterviewReview(req.user.userId);
   }
 }

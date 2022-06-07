@@ -8,11 +8,11 @@ import {
   Query,
   Request,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CompanyService } from './company.service';
 import { CompanyDetailResponseDto } from './dto/company-detail-response.dto';
+import { CompanyInterviewRequestDto } from './dto/company-interview-request.dto';
 import { CompanyListResponseDto } from './dto/company-list-response.dto';
 import { CompanyLocationListResponseDto } from './dto/company-location-list-response.dto';
 
@@ -39,6 +39,15 @@ export class CompanyController {
     @Param('id') id: number,
   ): Promise<CompanyDetailResponseDto> {
     return await this.companySerivce.getCompanyDetail(id, req.user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post()
+  async postInterview(
+    @Body() body: CompanyInterviewRequestDto,
+    @Request() req: any,
+  ) {
+    return await this.companySerivce.postInterview(body, req.user.userId);
   }
 
   @UseGuards(AuthGuard('jwt'))

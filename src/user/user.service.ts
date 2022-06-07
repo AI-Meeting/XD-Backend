@@ -39,9 +39,7 @@ export class UserService {
       .groupBy('questions.company_id')
       .getRawMany();
 
-    const isProgress = 'asd';
-
-    return { ...interviewReview, isProgress };
+    return interviewReview;
   }
 
   // 내가 진행중인 모의 면접

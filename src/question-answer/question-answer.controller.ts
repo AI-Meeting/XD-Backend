@@ -8,9 +8,12 @@ import {
   Post,
   Query,
   Request,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { QuestionAnswerPostDto } from './dto/question-answer-post.dto';
 import { QuestionAnswerService } from './question-answer.service';
 
@@ -19,15 +22,18 @@ export class QuestionAnswerController {
   constructor(private readonly questionAnswerService: QuestionAnswerService) {}
 
   @Post()
+  @UseInterceptors(AnyFilesInterceptor())
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(AuthGuard('jwt'))
   async createQuestionAnswer(
     @Request() req: any,
-    @Body() body: QuestionAnswerPostDto,
     @Query('questionId') questionId: number,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() body: QuestionAnswerPostDto,
   ) {
     return this.questionAnswerService.postQuestionAnswer(
       req.user.userId,
+      files,
       questionId,
       body,
     );
@@ -36,10 +42,7 @@ export class QuestionAnswerController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard('jwt'))
-  async deleteQuestionAnswer(
-    @Request() req: any,
-    @Query('answerId') answerId: number,
-  ) {
+  async deleteQuestionAnswer(@Request() req: any, @Body() answerId: number) {
     return this.questionAnswerService.deleteQuestionAanswer(
       req.user.userId,
       answerId,

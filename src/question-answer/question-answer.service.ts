@@ -25,7 +25,6 @@ export class QuestionAnswerService {
     const answer = new QuestionAnswer();
     answer.questionId = questionId;
     answer.answer = body.answer;
-
     answer.userId = userId;
 
     AWS.config.update({
@@ -37,38 +36,60 @@ export class QuestionAnswerService {
     });
 
     try {
-      files.map(async (file, idx) => {
-        const date = Date.now();
-        const test = [];
-        // 버킷 저장
-        await new AWS.S3()
-          .putObject({
-            Key: `${date + file.originalname}`,
-            Body: file.buffer,
-            Bucket: process.env.AWS_S3_BUCKET_NAME,
-            ACL: 'public-read',
-          })
-          .promise()
-          .then((res) => console.log(res));
+      const date = Date.now();
 
-        // 버킷 URL 가져오기
-        await new AWS.S3().getSignedUrl(
-          'getObject',
-          {
-            Bucket: process.env.AWS_S3_BUCKET_NAME,
-            Key: `${date + file.originalname}`,
-          },
-          (err, url) => {
-            if (err) {
-              throw err;
-            }
-            console.log(url);
-            answer.videoUrl = url;
-          },
-        );
-      });
-      console.log(answer, test);
-      this.questionAnswerRepository.save(answer);
+      // 버킷 저장
+      await new AWS.S3()
+        .putObject({
+          Key: `${date + files[0].originalname}`,
+          Body: files[0].buffer,
+          Bucket: process.env.AWS_S3_BUCKET_NAME,
+          ACL: 'public-read',
+        })
+        .promise()
+        .then(async () => {
+          // 버킷 URL 가져오기
+          await new AWS.S3().getSignedUrl(
+            'getObject',
+            {
+              Bucket: process.env.AWS_S3_BUCKET_NAME,
+              Key: `${date + files[0].originalname}`,
+            },
+            (err, url) => {
+              if (err) {
+                throw err;
+              }
+              answer.voiceUrl = url;
+            },
+          );
+        });
+
+      await new AWS.S3()
+        .putObject({
+          Key: `${date + files[1].originalname}`,
+          Body: files[1].buffer,
+          Bucket: process.env.AWS_S3_BUCKET_NAME,
+          ACL: 'public-read',
+        })
+        .promise()
+        .then(async () => {
+          // 버킷 URL 가져오기
+          await new AWS.S3().getSignedUrl(
+            'getObject',
+            {
+              Bucket: process.env.AWS_S3_BUCKET_NAME,
+              Key: `${date + files[1].originalname}`,
+            },
+            (err, url) => {
+              if (err) {
+                throw err;
+              }
+
+              answer.videoUrl = url;
+              this.questionAnswerRepository.save(answer);
+            },
+          );
+        });
     } catch (error) {
       console.log(error);
     }

@@ -25,6 +25,7 @@ import CatchException from './error/CatchException';
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
         synchronize: true,
+        logging: true,
         extra: {
           charset: 'utf8mb4_general_ci',
         },

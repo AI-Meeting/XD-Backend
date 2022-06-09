@@ -51,8 +51,11 @@ export class CompanyController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Delete('')
-  async deleteComapny(@Body() body: { id: number }, @Request() req: any) {
-    return await this.companySerivce.deleteCompany(body.id, req.user.userId);
+  @Delete('/:companyId')
+  async deleteComapny(@Param() companyId: any, @Request() req: any) {
+    return await this.companySerivce.deleteCompany(
+      companyId.companyId,
+      req.user.userId,
+    );
   }
 }

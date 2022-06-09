@@ -16,13 +16,13 @@ export class UserService {
     private readonly questionRepository: Repository<Question>,
   ) {}
 
-  async userInfo() {
+  async userInfo(userId: number) {
     return await this.userRepository
       .createQueryBuilder('user')
       .select('name', 'name')
       .addSelect('school', 'school')
       .addSelect('email', 'email')
-      .where('id=:id', { id: 1 })
+      .where('id=:userId', { userId })
       .getRawOne();
   }
 

@@ -121,18 +121,21 @@ export class CompanyService {
       .where('company.id=:id', { id: id })
       .getRawOne();
 
-    const question = await this.questionAnswerRepository
-      .createQueryBuilder('question_answer')
-      .select('question_answer.id', 'answerId')
-      .addSelect('question_answer.question_id', 'questionId')
-      .addSelect('question_answer.voice_url', 'voiceUrl')
-      .addSelect('question_answer.video_url', 'videoUrl')
-      .addSelect('question_answer.answer', 'answer')
-      .leftJoin('question_answer.question', 'question')
-      .addSelect('question.question', 'question')
-      .where('question_answer.user_id=:id', { id: userId })
-      .getRawMany();
+    const question = await this.questionRepository
+      .createQueryBuilder('question')
+      .select('question.id')
+      .addSelect('question.question')
+      .addSelect('answer')
+      .leftJoin(
+        'question.questionAnswers',
+        'answer',
+        'answer.user_id = :userId',
+        { userId },
+      )
+      .where('question.company_id=:id', { id })
+      .getMany();
 
+    console.log(question);
     return { ...company, userName: user.name, question };
   }
 
@@ -162,7 +165,7 @@ export class CompanyService {
       },
     );
     if (coordinate?.data.addresses.length === 0) {
-      throw new NotFoundException();
+      throw new NotFoundException('location Not Found');
     }
     const { x, y, roadAddress } = coordinate.data.addresses[0];
 

@@ -135,7 +135,6 @@ export class CompanyService {
       .where('question.company_id=:id', { id })
       .getMany();
 
-    console.log(question);
     return { ...company, userName: user.name, question };
   }
 

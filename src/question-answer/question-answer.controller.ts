@@ -4,6 +4,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Param,
   Patch,
   Post,
   Query,
@@ -39,13 +40,13 @@ export class QuestionAnswerController {
     );
   }
 
-  @Delete()
+  @Delete('/:answerId')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard('jwt'))
-  async deleteQuestionAnswer(@Request() req: any, @Body() answerId: number) {
+  async deleteQuestionAnswer(@Request() req: any, @Param() answerId: any) {
     return this.questionAnswerService.deleteQuestionAanswer(
       req.user.userId,
-      answerId,
+      answerId.answerId,
     );
   }
 

@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { QuestionAnswer } from '../entities/QuestionAnswer';
 import { QuestionAnswerPostDto } from './dto/question-answer-post.dto';
 import * as AWS from 'aws-sdk';
+import { uuid } from 'uuidv4';
 
 @Injectable()
 export class QuestionAnswerService {
@@ -37,11 +38,13 @@ export class QuestionAnswerService {
 
     try {
       const date = Date.now();
+      const firstUUID = uuid();
+      const secondUUID = uuid();
 
       // 버킷 저장
       await new AWS.S3()
         .putObject({
-          Key: `${date + files[0].originalname}`,
+          Key: `${date + firstUUID}`,
           Body: files[0].buffer,
           Bucket: process.env.AWS_S3_BUCKET_NAME,
           ACL: 'public-read',
@@ -53,13 +56,9 @@ export class QuestionAnswerService {
             'getObject',
             {
               Bucket: process.env.AWS_S3_BUCKET_NAME,
-              Key: `${date + files[0].originalname}`,
+              Key: `${date + firstUUID}`,
             },
             (err, url) => {
-              // if (err) {
-              //   throw err;
-              // }
-
               answer.voiceUrl = url.split('?')[0];
             },
           );
@@ -67,7 +66,7 @@ export class QuestionAnswerService {
 
       await new AWS.S3()
         .putObject({
-          Key: `${date + files[1].originalname}`,
+          Key: `${date + secondUUID}`,
           Body: files[1].buffer,
           Bucket: process.env.AWS_S3_BUCKET_NAME,
           ACL: 'public-read',
@@ -79,13 +78,9 @@ export class QuestionAnswerService {
             'getObject',
             {
               Bucket: process.env.AWS_S3_BUCKET_NAME,
-              Key: `${date + files[1].originalname}`,
+              Key: `${date + secondUUID}`,
             },
             (err, url) => {
-              // if (err) {
-              //   throw err;
-              // }
-
               answer.videoUrl = url.split('?')[0];
               this.questionAnswerRepository.save(answer);
             },

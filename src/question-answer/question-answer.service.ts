@@ -56,10 +56,11 @@ export class QuestionAnswerService {
               Key: `${date + files[0].originalname}`,
             },
             (err, url) => {
-              if (err) {
-                throw err;
-              }
-              answer.voiceUrl = url;
+              // if (err) {
+              //   throw err;
+              // }
+
+              answer.voiceUrl = url.split('?')[0];
             },
           );
         });
@@ -81,11 +82,11 @@ export class QuestionAnswerService {
               Key: `${date + files[1].originalname}`,
             },
             (err, url) => {
-              if (err) {
-                throw err;
-              }
+              // if (err) {
+              //   throw err;
+              // }
 
-              answer.videoUrl = url;
+              answer.videoUrl = url.split('?')[0];
               this.questionAnswerRepository.save(answer);
             },
           );

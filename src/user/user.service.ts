@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Company } from '../entities/Company';
+import { Interview } from '../entities/Interview';
 import { Question } from '../entities/Question';
 import { User } from '../entities/User';
 
@@ -12,6 +13,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Company)
     private readonly companyRepository: Repository<Company>,
+    @InjectRepository(Interview)
+    private readonly interviewReposotory: Repository<Interview>,
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
   ) {}
@@ -44,13 +47,14 @@ export class UserService {
 
   // 내가 진행중인 모의 면접
   async myInterview(userId: number) {
-    return await this.companyRepository
+    return await this.interviewReposotory
       .createQueryBuilder('interview')
       .select(['name', 'description', 'level', 'job', 'field', 'location'])
       .addSelect('interview.id', 'id')
       .addSelect('COUNT(questions.company_id) AS questionCnt')
-      .leftJoin('interview.address', 'address')
-      .leftJoin('interview.questions', 'questions')
+      .leftJoin('interview.company', 'company')
+      .leftJoin('company.address', 'address')
+      .leftJoin('company.questions', 'questions')
       .where('interview.user_id=:id', { id: userId })
       .groupBy('questions.company_id')
       .getRawMany();

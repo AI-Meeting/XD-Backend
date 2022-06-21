@@ -29,6 +29,7 @@ export class QuestionAnswerController {
   async createQuestionAnswer(
     @Request() req: any,
     @Query('questionId') questionId: number,
+    @Query('companyId') companyId: number,
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() body: QuestionAnswerPostDto,
   ) {
@@ -36,6 +37,7 @@ export class QuestionAnswerController {
       req.user.userId,
       files,
       questionId,
+      companyId,
       body,
     );
   }

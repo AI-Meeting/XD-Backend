@@ -111,7 +111,7 @@ export class CompanyService {
   }
 
   async getCompanyDetail(id: number, userId: number) {
-    const user = await this.userRepository.findOne({ id: 1 });
+    const user = await this.userRepository.findOne({ id: userId });
 
     const company = await this.companyRepository
       .createQueryBuilder('company')

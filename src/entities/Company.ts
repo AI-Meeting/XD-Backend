@@ -32,7 +32,7 @@ export class Company {
   @Column('varchar', { name: 'description', length: 255 })
   description: string;
 
-  @Column('int', { name: 'level', unsigned: true })
+  @Column('float', { name: 'level', unsigned: true })
   level: number;
 
   @Column('varchar', { name: 'job', length: 45 })

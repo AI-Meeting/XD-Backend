@@ -115,7 +115,15 @@ export class CompanyService {
 
     const company = await this.companyRepository
       .createQueryBuilder('company')
-      .select(['name', 'description', 'level', 'job', 'field', 'location'])
+      .select([
+        'name',
+        'description',
+        'level',
+        'job',
+        'field',
+        'location',
+        'company_logo',
+      ])
       .addSelect('company.id', 'id')
       .leftJoin('company.address', 'address')
       .where('company.id=:id', { id: id })

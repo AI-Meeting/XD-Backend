@@ -41,6 +41,9 @@ export class Company {
   @Column('varchar', { name: 'field', nullable: true, length: 45 })
   field: string | null;
 
+  @Column('varchar', { name: 'company_logo', nullable: true, length: 255 })
+  companyLogo: string | null;
+
   @ManyToOne(() => Address, (address) => address.companies, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',

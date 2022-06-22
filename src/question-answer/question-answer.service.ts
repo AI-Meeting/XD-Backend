@@ -57,6 +57,8 @@ export class QuestionAnswerService {
         const firstUUID = uuid();
         const secondUUID = uuid();
 
+        console.log(files);
+
         // 버킷 저장
         await new AWS.S3()
           .putObject({
@@ -75,7 +77,9 @@ export class QuestionAnswerService {
                 Key: `${date + firstUUID}`,
               },
               (err, url) => {
-                answer.voiceUrl = url.split('?')[0];
+                answer.videoUrl = url.split('?')[0];
+                this.questionAnswerRepository.save(answer);
+                console.log(url);
               },
             );
           });

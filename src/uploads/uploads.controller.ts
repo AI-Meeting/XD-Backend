@@ -49,7 +49,6 @@ export class UploadsController {
             if (err) {
               throw err;
             }
-            console.log(url);
           },
         );
       });

@@ -51,6 +51,7 @@ export class UserService {
       .createQueryBuilder('interview')
       .select(['name', 'description', 'level', 'job', 'field', 'location'])
       .addSelect('interview.id', 'id')
+      .addSelect('company.id', 'companyId')
       .addSelect('COUNT(questions.company_id) AS questionCnt')
       .leftJoin('interview.company', 'company')
       .leftJoin('company.address', 'address')

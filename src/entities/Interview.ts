@@ -1,4 +1,11 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Company } from './Company';
 import { User } from './User';
 
@@ -6,7 +13,7 @@ import { User } from './User';
 @Index('fk_interview_company1_idx', ['companyId'], {})
 @Entity('interview', { schema: 'xddb' })
 export class Interview {
-  @Column('int', { primary: true, name: 'id' })
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
   @Column('int', { name: 'user_id', unsigned: true })

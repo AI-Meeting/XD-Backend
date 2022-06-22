@@ -44,12 +44,14 @@ export class QuestionAnswerService {
       },
     });
 
-    if (files[0] === undefined) {
-      await this.questionAnswerRepository.save(answer);
-      await this.interviewRepository.save(interview);
+    if (files === undefined) {
+      try {
+        await this.questionAnswerRepository.save(answer);
+        await this.interviewRepository.save(interview);
+      } catch (e) {
+        console.log(e);
+      }
     } else {
-      console.log(files);
-
       try {
         const date = Date.now();
         const firstUUID = uuid();

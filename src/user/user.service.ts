@@ -50,8 +50,7 @@ export class UserService {
     return await this.interviewReposotory
       .createQueryBuilder('interview')
       .select(['name', 'description', 'level', 'job', 'field', 'location'])
-      .addSelect('interview.id', 'id')
-      .addSelect('company.id', 'companyId')
+      .addSelect('company.id', 'id')
       .addSelect('COUNT(questions.company_id) AS questionCnt')
       .leftJoin('interview.company', 'company')
       .leftJoin('company.address', 'address')
